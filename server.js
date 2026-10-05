@@ -10,7 +10,8 @@ const BOTS = +process.env.BOTS || 35;              // rivales controlados por el
 const KNIVES = +process.env.KNIVES || 0.5;         // espadas en el suelo (1 = igual que en solitario)
 const MAX_PLAYERS = +process.env.MAX_PLAYERS || 30;
 const TICK_MS = 50;                                // 20 actualizaciones por segundo
-const ROUND_END = 215;                             // segundos: zona 3:00 + colapso 20 s + margen; luego empieza otra partida
+const ROUND_END = 210;                             // segundos: la zona queda toda roja a los 200 s; a los 210 empieza otra partida
+const LOCK_AT = ROUND_END - 15;                    // en los últimos 15 s ya no se puede reaparecer
 
 const HTML = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
 const CODE = HTML.split("<script>")[1].split("</script>")[0];
@@ -61,7 +62,7 @@ const web = http.createServer((req, res) => {
 });
 
 /* ---------- Partida ---------- */
-let sim = newSim(), tickN = 0, nextEid = 5000, nextHid = 10000;
+let sim = newSim(), roundEnd = ROUND_END, tickN = 0, nextEid = 5000, nextHid = 10000;
 const humans = new Map();
 const send = (h, o) => { if (h.ws.readyState === 1) h.ws.send(JSON.stringify(o)); };
 const broadcast = (o, except) => { const s = JSON.stringify(o); for (const h of humans.values()) if (h !== except && h.ws.readyState === 1) h.ws.send(s); };
@@ -88,7 +89,7 @@ function sendInit(h) {
 }
 function newRound() {
   const winner = [...humans.values()].filter(h => h.ent).sort((a, b) => (b.best || 0) - (a.best || 0))[0];
-  sim = newSim();
+  sim = newSim(); roundEnd = ROUND_END;
   for (const h of humans.values()) { h.ent = null; h.best = 0; spawnHuman(h); sendInit(h); }
   sim.EV.push(["b", "🏁 Nueva partida" + (winner && winner.best ? " · Mejor de la anterior: " + winner.name + " (" + winner.best + " pts)" : ""), "#ffe066"]);
 }
@@ -110,6 +111,8 @@ function tick() {
       send(h, { t: "dead", msg: h.ent.deathMsg || "Fuiste eliminado", score: score(h.ent), kills: h.ent.kills, peak: h.ent.peak, time: Math.max(0, Math.floor(A.clock - h.ent.born)) });
     }
   }
+  // final de la partida: si ya no queda nadie vivo en los últimos 15 s, termina en 3 s
+  if (A.clock >= LOCK_AT && roundEnd > A.clock + 3 && ![...humans.values()].some(h => h.ent && h.ent.alive)) roundEnd = A.clock + 3;
   // datos compartidos por todos los jugadores
   const alive = A.enemies.filter(e => e.alive);
   const saws = A.obstacles.filter(o => o.type === "saw").map(o => [Math.round(o.x), Math.round(o.y)]);
@@ -119,7 +122,7 @@ function tick() {
   for (const h of humans.values()) {
     const me = h.ent; if (!me) continue;
     const near = (x, y) => Math.abs(x - me.x) < 1500 && Math.abs(y - me.y) < 1100;
-    const msg = { t: "s", n: +A.clock.toFixed(2), a: alive.length, o: humans.size, sw: saws, mt: mets,
+    const msg = { t: "s", n: +A.clock.toFixed(2), r: Math.max(0, Math.ceil(roundEnd - A.clock)), a: alive.length, o: humans.size, sw: saws, mt: mets,
       e: alive.filter(o => near(o.x, o.y)).map(o => [o.id, Math.round(o.x), Math.round(o.y), o.blades, flags(o)]) };
     if ((tickN + h.id) % 4 === 0) {            // espadas y orbes cercanos: 5 veces por segundo
       msg.k = A.knives.filter(k => near(k.x, k.y)).map(k => [Math.round(k.x), Math.round(k.y)]);
@@ -131,7 +134,7 @@ function tick() {
     if (l.length) send(h, { t: "ev", l });
   }
   A.EV.length = 0;
-  if (A.clock > ROUND_END) newRound();
+  if (A.clock > roundEnd) newRound();
 }
 setInterval(tick, TICK_MS);
 
@@ -149,14 +152,14 @@ wss.on("connection", ws => {
       const v = sim.validateNick(String(m.name || ""));
       if (!v.ok) { send(h, { t: "err", msg: v.msg }); return ws.close(); }
       h.name = v.nick; h.skin = Math.max(0, Math.min(sim.SKINS.length - 1, m.skin | 0)); h.joined = true;
-      if (!humans.size) sim = newSim();        // primera persona: partida nueva
+      if (!humans.size) { sim = newSim(); roundEnd = ROUND_END; }   // primera persona: partida nueva
       humans.set(h.id, h); spawnHuman(h); sendInit(h);
       broadcast({ t: "ent", r: rosterOf(h.ent) }, h);
       sim.EV.push(["f", h.name + " entró a la arena", "#9fd8ff"]);
     } else if (m.t === "in" && h.joined) {
       const x = +m.x, y = +m.y;
       if (isFinite(x) && isFinite(y)) h.in = [Math.max(-1, Math.min(1, x)), Math.max(-1, Math.min(1, y))];
-    } else if (m.t === "respawn" && h.joined && h.dead) { spawnHuman(h); send(h, { t: "spawn" }); }
+    } else if (m.t === "respawn" && h.joined && h.dead && sim.clock < LOCK_AT) { spawnHuman(h); send(h, { t: "spawn" }); }
   });
   ws.on("close", () => {
     clearInterval(rate);

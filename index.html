@@ -2,14 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0d2b12">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dino Blades</title>
 <style>
 *{box-sizing:border-box}
@@ -49,35 +42,6 @@ html,body,canvas{touch-action:none}
 #banner{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:11;font:bold 24px Arial;text-align:center;max-width:90vw;pointer-events:none;text-shadow:0 3px 8px #000;opacity:0;transition:opacity .4s}
 #feed{position:fixed;top:62px;right:12px;z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:13px}
 #feed div{background:rgba(0,0,0,.55);padding:3px 8px;border-radius:6px;text-shadow:0 1px 2px #000}
-html,body{overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-#safe{position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-#ui{top:max(15px,env(safe-area-inset-top));left:max(15px,env(safe-area-inset-left))}
-#hudBtns{top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}
-#rotate{display:none;color:#ffe066;font-size:13px;margin:4px 0}
-@media (orientation:portrait) and (pointer:coarse){#rotate{display:block}}
-@media (max-width:900px),(max-height:520px){
-  #ui{top:max(8px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left))}
-  #title{font-size:14px}#title span{display:none}
-  #stats{font-size:12px;margin-top:3px}.stat-row{gap:8px;flex-wrap:wrap}
-  #timer{font-size:16px;top:8px;padding:3px 10px}
-  #hudBtns{top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right))}
-  #hudBtns button{width:38px;height:38px;font-size:16px}
-  #feed{top:54px;right:max(8px,env(safe-area-inset-right));font-size:11px}
-  #banner{font-size:16px;top:44px}
-  .box{padding:18px}.box h1{font-size:28px}
-  button{padding:10px 20px}
-}
-@media (max-height:520px){
-  .hint,#startBox h3,#rankStart{display:none}
-  #startBox h1{font-size:24px;margin:0 0 2px}
-  #skins{margin:4px 0}.skin{width:32px;height:32px}
-  #nickErr{margin:2px 0 8px;min-height:16px}
-}
-#rotateGate{display:none;position:fixed;inset:0;z-index:60;background:#06160a;color:#fff;align-items:center;justify-content:center;text-align:center;font:bold 22px Arial;padding:20px}
-#rotateGate .ph{font-size:64px;display:inline-block;animation:rot 2.4s ease-in-out infinite}
-@keyframes rot{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
-@media (orientation:portrait) and (pointer:coarse){#rotateGate{display:flex}}
-#startBtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -91,7 +55,6 @@ html,body{overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callou
       <div>Mis Espadas: <span id="topBladeCount" style="color:#31d8ff;font-weight:bold">5</span></div>
       <div id="defensiveStatus">Estado: <span>Ataque</span></div>
       <div>Nivel: <span id="levelNum" style="color:#ffcc00;font-weight:bold">1</span></div>
-      <div id="onlineBox" style="display:none">🌐 <span id="onlineN" style="font-weight:bold">1</span> jugadores</div>
     </div>
     <div id="activePowerups"></div>
   </div>
@@ -99,7 +62,7 @@ html,body{overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callou
 
 <div id="help">WASD / Flechas para moverte | Al acercarte a un rival las espadas chocan y se destruyen | Gana quien conserve más | M: sonido</div>
 
-<div id="gameOver"><div class="box"><h1 style="color:#ff4a4a">ELIMINADO</h1><p id="deathMsg" style="color:#ff9a9a;margin:0 0 6px"></p><p id="finalScore" style="font-size:16px"></p><div class="rank" id="rankOver"></div><button id="retryBtn" onclick="retry()">REINTENTAR</button></div></div>
+<div id="gameOver"><div class="box"><h1 style="color:#ff4a4a">ELIMINADO</h1><p id="deathMsg" style="color:#ff9a9a;margin:0 0 6px"></p><p id="finalScore" style="font-size:16px"></p><div class="rank" id="rankOver"></div><button onclick="location.reload()">REINTENTAR</button></div></div>
 <div id="victory"><div class="box" id="victoryBox"><h1 style="color:#31d8ff">VICTORIA</h1><p style="font-size:18px">¡Sobreviviste y exterminaste a todos los rivales!</p><p id="victoryScore" style="color:#a2f3ff"></p><div class="rank" id="rankWin"></div><button onclick="location.reload()">JUGAR OTRA VEZ</button></div></div>
 
 <div id="start">
@@ -109,37 +72,22 @@ html,body{overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callou
     <input id="nickInput" maxlength="14" placeholder="Tu nick" autocomplete="off" spellcheck="false">
     <div id="skins"></div>
     <div id="nickErr"></div>
-    <div id="startBtns"><button id="onlineBtn">🌐 JUGAR EN LÍNEA</button><button id="playBtn" style="background:#7dff7d">JUGAR SOLO</button></div>
-    <p class="hint">WASD / Flechas o joystick táctil · Detente para defenderte · P: pausa · M: sonido<br>Etiqueta 🔴 roja = tiene más espadas que tú · 🟢 verde = menos<br>La zona roja se cierra en 3 minutos: ¡quédate dentro!</p>
+    <button id="playBtn">JUGAR</button>
+    <p class="hint">WASD / Flechas o joystick táctil · Detente para defenderte · P: pausa · M: sonido<br>La zona roja se cierra en 3 minutos: ¡quédate dentro!</p>
     <h3 style="margin:14px 0 4px">🏆 Mejores jugadores</h3><div class="rank" id="rankStart"></div>
   </div>
 </div>
 <div id="pauseMenu"><div class="box" style="border-color:#3fae4c"><h1 style="color:#7dff7d">PAUSA</h1><button id="resumeBtn">CONTINUAR</button><div style="height:10px"></div><button id="quitBtn" style="background:#ff6b6b">SALIR</button></div></div>
-<div id="hudBtns"><button id="btnFull">⛶</button><button id="btnSound">🔊</button><button id="btnPause">⏸</button></div><div id="safe"></div>
-<div id="rotateGate"><div><div class="ph">📱</div><p>Gira tu teléfono<br><small style="font-weight:normal">Dino Blades se juega en horizontal</small></p><button id="gateFull">Pantalla completa</button></div></div>
+<div id="hudBtns"><button id="btnSound">🔊</button><button id="btnPause">⏸</button></div>
 <div id="timer"></div><div id="banner"></div><div id="feed"></div>
 
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-const IS_TOUCH = typeof window.matchMedia === "function" ? (matchMedia("(pointer: coarse)").matches || ("ontouchstart" in window && window.innerWidth <= 1100)) : false;
-const SERVER = typeof SERVER_MODE !== "undefined";   // true cuando este mismo código corre dentro del servidor en línea
-const LOWFX = IS_TOUCH, KN = typeof SERVER_KN !== "undefined" ? SERVER_KN : (IS_TOUCH ? 0.75 : 1);      // en celular: sin sombras brillantes y menos espadas en el suelo
-if (LOWFX) Object.defineProperty(ctx, "shadowBlur", { set() {}, get() { return 0; } });
-let W = 0, H = 0, VW = 0, VH = 0, DPR = 1, ZOOM = 1;   // W,H = zona visible en unidades del mundo; VW,VH = píxeles de la pantalla
-const safe = { t: 0, r: 0, b: 0, l: 0 };                // márgenes seguros (notch)
-function resize() {
-  VW = window.innerWidth; VH = window.innerHeight;
-  DPR = IS_TOUCH ? Math.min(window.devicePixelRatio || 1, 2) : 1;
-  ZOOM = IS_TOUCH ? Math.max(0.5, Math.min(1, Math.min(VW, VH) / 620)) : 1;   // en pantallas pequeñas se ve más mapa
-  W = VW / ZOOM; H = VH / ZOOM;
-  canvas.width = Math.round(VW * DPR); canvas.height = Math.round(VH * DPR);
-  canvas.style.width = VW + "px"; canvas.style.height = VH + "px";
-  try { const cs = getComputedStyle(document.getElementById("safe")); safe.t = parseFloat(cs.paddingTop) || 0; safe.r = parseFloat(cs.paddingRight) || 0; safe.b = parseFloat(cs.paddingBottom) || 0; safe.l = parseFloat(cs.paddingLeft) || 0; } catch (e) {}
-}
+let W = 0, H = 0;
+function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 resize();
 window.addEventListener("resize", resize);
-window.addEventListener("orientationchange", () => setTimeout(resize, 300));
 
 const world = { width: 9000, height: 9000 };
 const camera = { x: 0, y: 0 };
@@ -304,7 +252,6 @@ function zoneEffects(e, dt) {   // en la zona roja se pierden espadas; sin espad
     e.alive = false; boom(e.x, e.y, "#ff2d2d"); sfxKill(e.x, e.y);
     feed(e.name + " fue consumido por la zona roja", e === player ? "#ff6b6b" : "#ffd0d0");
     if (e === player) deathMsg = "La zona roja te consumió";
-    if (e.human) e.deathMsg = "La zona roja te consumió";
   }
 }
 
@@ -317,7 +264,7 @@ function spawnKnife(x, y) {
   }
   knives.push({ x: kx, y: ky, rot: rnd(0, 6.28) });
 }
-for (let i = 0; i < 2800 * KN; i++) spawnKnife();
+for (let i = 0; i < 2800; i++) spawnKnife();
 
 const PU = {
   speed:  { color: "#ffcc00", letter: "V" },
@@ -333,8 +280,7 @@ function spawnPowerup() {
 }
 for (let i = 0; i < 80; i++) spawnPowerup();
 
-const NBOTS = SERVER ? SERVER_BOTS : 75;
-for (let i = 0; i < NBOTS; i++) {
+for (let i = 0; i < 75; i++) {
   const c = enemyColors[i % enemyColors.length];
   let x, y;
   do { x = rnd(100, world.width - 100); y = rnd(100, world.height - 100); }
@@ -342,7 +288,7 @@ for (let i = 0; i < NBOTS; i++) {
   const en = makeEntity(x, y, Math.floor(rnd(4, 18)), c.body, c.inner, rnd(220, 280));
   en.kind = i % 4; // 0 T-Rex, 1 Triceratops, 2 Espinosaurio, 3 Carnotauro
   en.name = BOT_NAMES[i % BOT_NAMES.length] + (i >= BOT_NAMES.length ? " " + (Math.floor(i / BOT_NAMES.length) + 1) : "");
-  const sk = SKINS[i % SKINS.length]; en.color = sk.color; en.innerColor = sk.inner; en.bladeCols = sk.blade; en.id = i + 1; en.skin = i % SKINS.length;
+  const sk = SKINS[i % SKINS.length]; en.color = sk.color; en.innerColor = sk.inner; en.bladeCols = sk.blade;
   enemies.push(en);
 }
 
@@ -375,7 +321,6 @@ function killEntity(victim, killer) {
   killer.kills++;
   feed(killer.name + " eliminó a " + victim.name, killer === player ? "#ffe066" : victim === player ? "#ff6b6b" : "#fff");
   if (victim === player) deathMsg = "Te eliminó " + killer.name;
-  if (victim.human) victim.deathMsg = "Te eliminó " + killer.name;
   if (victim.boss) banner("👑 " + killer.name + " derrotó al JEFE", "#ffe066");
   const loot = Math.max(3, Math.round(victim.peak * 0.6));
   killer.blades += Math.ceil(loot * 0.7);
@@ -469,7 +414,6 @@ function enemyAI(e, dt) {
 
 const CLASH_RATE = 12; // espadas que pierde cada uno por segundo al chocar
 function sparks(x, y, n) {
-  if (LOWFX) n = Math.ceil(n / 2);
   const cols = ["#fffbe0", "#ffd54a", "#ff9f1c", "#9ff3ff"];
   for (let i = 0; i < n; i++) {
     const a = rnd(0, 6.283), sp = rnd(180, 520);
@@ -523,16 +467,15 @@ function update(dt) {
   time += dt;
   updateObstacles(dt);
   gameClock += dt; updateZone(); updateEvents(dt); updateMeteors(dt);
-  if (!SERVER) {
-    let dx = 0, dy = 0;
-    if (keys["w"] || keys["arrowup"]) dy -= 1;
-    if (keys["s"] || keys["arrowdown"]) dy += 1;
-    if (keys["a"] || keys["arrowleft"]) dx -= 1;
-    if (keys["d"] || keys["arrowright"]) dx += 1;
-    if (joy.active && Math.hypot(joy.x, joy.y) > 0.25) { dx = joy.x; dy = joy.y; }   // joystick táctil
-    updateEntity(player, dt, dx, dy);
-  }
-  for (const e of enemies) if (e.alive) { if (e.human) updateEntity(e, dt, e.inx, e.iny); else enemyAI(e, dt); }   // humanos (en línea) o bots
+  let dx = 0, dy = 0;
+  if (keys["w"] || keys["arrowup"]) dy -= 1;
+  if (keys["s"] || keys["arrowdown"]) dy += 1;
+  if (keys["a"] || keys["arrowleft"]) dx -= 1;
+  if (keys["d"] || keys["arrowright"]) dx += 1;
+  if (joy.active && Math.hypot(joy.x, joy.y) > 0.25) { dx = joy.x; dy = joy.y; }   // joystick táctil
+  updateEntity(player, dt, dx, dy);
+
+  for (const e of enemies) if (e.alive) enemyAI(e, dt);
 
   const all = [player, ...enemies.filter(e => e.alive)];
   for (let i = 0; i < all.length; i++)
@@ -547,14 +490,22 @@ function update(dt) {
 
   // mantener cuchillos en el mapa
   const zw = zone.r - zone.l;
-  const target = zw < 160 ? 0 : Math.max(50, 2200 * KN * (zw * (zone.b - zone.t)) / (world.width * world.height));   // en la zona final quedan ~50
+  const target = zw < 160 ? 0 : Math.max(50, 2200 * (zw * (zone.b - zone.t)) / (world.width * world.height));   // en la zona final quedan ~50
   for (let i = knives.length - 1, c = 0; i >= 0 && c < 40; i--) if (!inZone(knives[i].x, knives[i].y, 0)) { knives.splice(i, 1); c++; }
   while (knives.length < target) spawnKnife();
 
-  updateTimerHud();
-  if (SERVER) return;
   const alive = enemies.filter(e => e.alive).length;
-  hudUpdate(alive);
+  updateTimerHud();
+  document.getElementById("rivalsCount").textContent = alive;
+  document.getElementById("topBladeCount").textContent = player.blades;
+  document.getElementById("levelNum").textContent = tierOf(player.blades) + 1;
+  const st = document.getElementById("defensiveStatus");
+  st.innerHTML = player.defensive ? 'Estado: <span class="defensive-active">DEFENSIVO</span>' : 'Estado: <span>Ataque</span>';
+  const pw = [];
+  if (player.speedTimer > 0) pw.push('<span style="color:#ffcc00">Velocidad ' + player.speedTimer.toFixed(1) + 's</span>');
+  if (player.shieldTimer > 0) pw.push('<span style="color:#00f0ff">Escudo ' + player.shieldTimer.toFixed(1) + 's</span>');
+  if (player.magnetTimer > 0) pw.push('<span style="color:#cc00ff">Imán ' + player.magnetTimer.toFixed(1) + 's</span>');
+  document.getElementById("activePowerups").innerHTML = pw.join("");
 
   if (!player.alive) end(false);
   else if (alive === 0) end(true);
@@ -779,22 +730,14 @@ function drawBody(e, isPlayer) {
   ctx.strokeStyle = e.innerColor; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.8;
   ctx.beginPath(); ctx.arc(e.x, e.y, r * 1.05, 0, 6.283); ctx.stroke(); ctx.globalAlpha = 1;
   drawDinoSprite(e);
-  const u = 1 / ZOOM, ty = e.y - reachOf(e) - 6 * u, th = 22 * u, cy = ty - th / 2;
-  const txt = "⚔ " + e.blades;
-  ctx.lineJoin = "round"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.font = "bold " + 15 * u + "px Arial";
-  const tw = ctx.measureText(txt).width + 18 * u;
-  ctx.fillStyle = isPlayer ? "#1e88e5" : e.blades > player.blades ? "#d32f2f" : e.blades < player.blades ? "#2e9e3e" : "#f9a825";
-  ctx.strokeStyle = "#fff"; ctx.lineWidth = 2 * u;
-  ctx.beginPath(); ctx.arc(e.x - tw / 2 + th / 2, cy, th / 2, Math.PI / 2, Math.PI * 1.5); ctx.arc(e.x + tw / 2 - th / 2, cy, th / 2, -Math.PI / 2, Math.PI / 2); ctx.closePath();
-  ctx.fill(); ctx.stroke();
-  ctx.fillStyle = "#fff"; ctx.fillText(txt, e.x, cy + u);
+  const ty = e.y - reachOf(e) - 8;
+  ctx.textAlign = "center"; ctx.lineJoin = "round"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,.75)";
+  ctx.font = "bold 12px Arial"; ctx.strokeText(e.blades, e.x, ty);
+  ctx.fillStyle = "#fff"; ctx.fillText(e.blades, e.x, ty);
   if (e.name) {
-    ctx.font = "bold " + 14 * u + "px Arial"; ctx.lineWidth = 3 * u; ctx.strokeStyle = "rgba(0,0,0,.75)";
-    ctx.strokeText(e.name, e.x, ty - th - 8 * u);
-    ctx.fillStyle = isPlayer ? "#ffe066" : "#e8f4ff"; ctx.fillText(e.name, e.x, ty - th - 8 * u);
+    ctx.font = "bold 14px Arial"; ctx.strokeText(e.name, e.x, ty - 15);
+    ctx.fillStyle = isPlayer ? "#ffe066" : "#e8f4ff"; ctx.fillText(e.name, e.x, ty - 15);
   }
-  ctx.textBaseline = "alphabetic";
 }
 
 const deco = [];
@@ -815,7 +758,7 @@ function drawGrid() {            // pradera verde con pasto que se mece
     ctx.fillStyle = "rgba(255,255,170,.05)";
     ctx.beginPath(); ctx.arc(tx * T + hash(tx, ty, 50) * T, ty * T + hash(tx, ty, 51) * T, 60 + hash(tx, ty, 52) * 50, 0, 6.283); ctx.fill();
     // matas de pasto
-    for (let i = 0; i < (LOWFX ? 4 : 9); i++) {
+    for (let i = 0; i < 9; i++) {
       const gx = tx * T + hash(tx, ty, i) * T, gy = ty * T + hash(tx, ty, i + 20) * T;
       const sway = Math.sin(time * 2 + gx * 0.02 + gy * 0.013) * 3;
       ctx.strokeStyle = (i & 1) ? "hsl(105,55%,40%)" : "hsl(96,60%,18%)";
@@ -919,7 +862,7 @@ function drawObstacles(layer) {
 }
 
 function drawMinimap() {
-  const S = Math.min(IS_TOUCH ? 120 : 170, Math.floor(Math.min(VW, VH) * 0.28)), x0 = VW - S - 14 - safe.r, y0 = VH - S - 14 - safe.b, k = S / world.width;
+  const S = Math.min(170, Math.floor(Math.min(W, H) * 0.28)), x0 = W - S - 14, y0 = H - S - 14, k = S / world.width;
   ctx.save();
   ctx.fillStyle = "rgba(18,70,28,.88)"; ctx.fillRect(x0, y0, S, S);
   ctx.strokeStyle = "#b6f0b6"; ctx.lineWidth = 2; ctx.strokeRect(x0, y0, S, S);
@@ -931,7 +874,7 @@ function drawMinimap() {
     ctx.fillStyle = o.type === "lava" ? "rgba(255,110,0,.8)" : o.type === "saw" ? "#fff" : "rgba(160,170,180,.6)";
     ctx.beginPath(); ctx.arc(x0 + o.x * k, y0 + o.y * k, Math.max(1.5, o.r * k), 0, 6.283); ctx.fill();
   }
-  for (const e of (ONLINE ? netMM : enemies)) {
+  for (const e of enemies) {
     if (!e.alive) continue;
     ctx.fillStyle = e.boss ? "#ffd700" : e.blades > player.blades ? "#ff4a4a" : "#7dff7d";   // rojo: más espadas que tú
     ctx.beginPath(); ctx.arc(x0 + e.x * k, y0 + e.y * k, e.boss ? 4.5 : 2.2, 0, 6.283); ctx.fill();
@@ -948,7 +891,6 @@ function visible(x, y, m) {
 }
 
 function draw() {
-  ctx.setTransform(DPR * ZOOM, 0, 0, DPR * ZOOM, 0, 0);
   ctx.fillStyle = "#0d2b12";
   ctx.fillRect(0, 0, W, H);
 
@@ -1014,7 +956,6 @@ function draw() {
   }
   ctx.globalAlpha = 1;
   ctx.restore();
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);   // HUD en píxeles reales de pantalla
   drawMinimap();
   drawHUD();
 }
@@ -1033,7 +974,7 @@ function initAudio() {
   for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
   startMusic();
 }
-["keydown", "pointerdown", "touchend", "click"].forEach(ev => window.addEventListener(ev, initAudio));
+["keydown", "pointerdown"].forEach(ev => window.addEventListener(ev, initAudio));
 window.addEventListener("keydown", e => {
   if (e.key.toLowerCase() === "m" && !(e.target && e.target.tagName === "INPUT")) { toggleMute(); }
 });
@@ -1083,28 +1024,10 @@ function sfxOver(win) {
   if (win) [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.45, "triangle", 0.14, i * 0.12));
   else { tone(300, 0.7, "sawtooth", 0.14, 0, 60); noise(0.5, 0.25, 200); }
 }
-function musicMood() {   // 0 normal · 1 suspenso (últimos 30 s) · 2 colapso final · 3 terror (el Rey Rex ronda)
+function musicMood() {   // 0 normal · 1 suspenso (últimos 30 s o jefe vivo) · 2 colapso final
   if (!started || finished) return 0;
   if (gameClock >= ZONE_TIME) return 2;
-  if ((ONLINE ? netMM : enemies).some(e => e.alive && e.boss)) return 3;
-  return gameClock >= ZONE_TIME - 30 ? 1 : 0;
-}
-function dark(freq, dur, vol, when, slideTo, cutoff) {   // grave oscuro: onda de sierra con filtro pasa-bajos
-  if (!AC) return;
-  const t = AC.currentTime + (when || 0), o = AC.createOscillator(), f = AC.createBiquadFilter(), g = AC.createGain();
-  o.type = "sawtooth"; o.frequency.setValueAtTime(freq, t);
-  if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
-  f.type = "lowpass"; f.frequency.value = cutoff || 220;
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.25, dur / 3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(f); f.connect(g); g.connect(musicGain); o.start(t); o.stop(t + dur + 0.02);
-}
-function wail(freq, dur, vol, when, slideTo) {           // silbido fantasmal con vibrato
-  if (!AC) return;
-  const t = AC.currentTime + (when || 0), o = AC.createOscillator(), l = AC.createOscillator(), lg = AC.createGain(), g = AC.createGain();
-  o.type = "sine"; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
-  l.frequency.value = 5.5; lg.gain.value = freq * 0.02; l.connect(lg); lg.connect(o.frequency);
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(g); g.connect(musicGain); o.start(t); l.start(t); o.stop(t + dur + 0.02); l.stop(t + dur + 0.02);
+  return (gameClock >= ZONE_TIME - 30 || enemies.some(e => e.alive && e.boss)) ? 1 : 0;
 }
 function startMusic() {              // música en bucle (La menor); cambia a suspenso cuando se acerca el final
   const bass = [55, 65.41, 49, 43.65];
@@ -1114,26 +1037,11 @@ function startMusic() {              // música en bucle (La menor); cambia a su
   setInterval(() => {
     while (next < AC.currentTime + 0.5) {
       const bar = Math.floor(step / 8) % 4, i = step % 8, w = next - AC.currentTime, mood = musicMood();
-      if (mood !== lastMood) {
-        if (mood === 3) { dark(46, 2.4, 0.4, w, 28, 300); tone(73.42, 3, "sine", 0.3, w, 0, musicGain); noise(0.9, 0.2, 80); }   // golpe de terror
-        else if (mood > lastMood) tone(110, 1.3, "sawtooth", 0.1, w, 440, musicGain);
-        lastMood = mood;
-      }
+      if (mood !== lastMood) { if (mood > lastMood) tone(110, 1.3, "sawtooth", 0.1, w, 440, musicGain); lastMood = mood; }
       if (mood === 0) {
         if (i === 0 || i === 4) tone(bass[bar], 0.7, "triangle", 0.16, w, 0, musicGain);
         tone(arps[bar][order[i]] * (i % 2 ? 2 : 1), 0.22, "sine", 0.07, w, 0, musicGain);
         if (i === 0 && bar % 2 === 0) tone(arps[bar][2] * 2, 0.9, "sine", 0.04, w, 0, musicGain);
-      } else if (mood === 3) {                                                // TERROR: algo enorme ronda cerca
-        const q = step % 32;
-        if (q % 8 === 0) { dark(36.71, 2.0, 0.32, w, 0, 140); dark(51.91, 2.0, 0.2, w, 0, 140); }   // zumbido grave con tritono
-        if (q === 0 || q === 16) { tone(73.42, 3, "sine", 0.24, w, 0, musicGain); tone(202.6, 2.2, "sine", 0.08, w, 0, musicGain); tone(396, 1.4, "sine", 0.04, w, 0, musicGain); }   // campana fúnebre
-        if (q % 8 === 0) tone(60, 0.3, "sine", 0.42, w, 32, musicGain);      // latido lento y pesado
-        if (q % 8 === 3) tone(54, 0.3, "sine", 0.3, w, 30, musicGain);
-        if (q === 8) wail(622, 3, 0.08, w, 587);                              // lamento fantasmal
-        if (q === 20) wail(466, 2.6, 0.07, w, 440);
-        if (q === 12) { dark(73.42, 1.2, 0.24, w, 0, 320); dark(77.78, 1.2, 0.22, w, 0, 320); dark(110, 1.2, 0.14, w, 0, 320); }   // acorde disonante
-        if (q === 28) dark(55, 1.1, 0.34, w, 30, 260);                        // gruñido que se hunde
-        if (Math.random() < 0.12) noise(0.3, 0.035, 5500);                    // roces en la oscuridad
       } else {
         const per = mood === 2 ? 4 : 8;                                   // latido: más rápido en el colapso
         if (i % per === 0) tone(70, 0.2, "sine", 0.34, w, 38, musicGain);
@@ -1192,8 +1100,7 @@ function updateEvents(dt) {
 }
 function spawnMeteor() {
   const t = enemies.filter(e => e.alive);
-  const hs = SERVER ? enemies.filter(e => e.human && e.alive) : [player];
-  const c = Math.random() < 0.65 && hs.length ? hs[Math.floor(rnd(0, hs.length))] : t.length ? t[Math.floor(rnd(0, t.length))] : player;
+  const c = Math.random() < 0.65 || !t.length ? player : t[Math.floor(rnd(0, t.length))];
   meteors.push({ x: clamp(c.x + rnd(-650, 650), 100, world.width - 100), y: clamp(c.y + rnd(-420, 420), 100, world.height - 100), r: rnd(110, 150), t: 0, delay: 1.5 });
 }
 function updateMeteors(dt) {
@@ -1239,12 +1146,8 @@ function drawZone() {            // capa roja fuera de la zona segura
 }
 function drawHUD() {
   if (started && player.alive && !inZone(player.x, player.y, 0)) {
-    ctx.fillStyle = "rgba(255,0,0," + (0.1 + 0.08 * Math.sin(time * 8)) + ")"; ctx.fillRect(0, 0, VW, VH);
-    ctx.fillStyle = "#ff6b6b"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center"; ctx.fillText("⚠ FUERA DE LA ZONA: pierdes espadas", VW / 2, 100);
-  }
-  if (IS_TOUCH && started && !joy.active && gameClock < 10) {   // ayuda inicial para celular
-    ctx.font = "bold 15px Arial"; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,.7)"; ctx.fillStyle = "#fff";
-    const msg = "👆 Arrastra para moverte · Suelta para defenderte"; ctx.strokeText(msg, VW / 2, VH - 24 - safe.b); ctx.fillText(msg, VW / 2, VH - 24 - safe.b);
+    ctx.fillStyle = "rgba(255,0,0," + (0.1 + 0.08 * Math.sin(time * 8)) + ")"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#ff6b6b"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center"; ctx.fillText("⚠ FUERA DE LA ZONA: pierdes espadas", W / 2, 110);
   }
   if (joy.active) {
     ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(joy.ox, joy.oy, 60, 0, 6.283); ctx.stroke();
@@ -1267,9 +1170,8 @@ function renderRanking(el, hi, n) {
 renderRanking($("rankStart"), -1, 5);
 
 /* Skins */
-let skinIdx = 0;
 function applySkin(i) {
-  skinIdx = i; const s = SKINS[i];
+  const s = SKINS[i];
   player.color = s.color; player.innerColor = s.inner; player.bladeCols = s.blade;
   Array.from(skinsEl.children).forEach((c, j) => { c.style.borderColor = j === i ? "#fff" : "transparent"; });
   try { localStorage.setItem("dinoSkin", i); } catch (e) {}
@@ -1295,11 +1197,11 @@ window.addEventListener("touchmove", e => {
 }, { passive: false });
 const endTouch = e => { for (const t of e.changedTouches) if (t.identifier === joy.id) { joy.active = false; joy.x = joy.y = 0; } };
 window.addEventListener("touchend", endTouch); window.addEventListener("touchcancel", endTouch);
-if (IS_TOUCH) $("help").style.display = "none";
+if (typeof navigator !== "undefined" && (navigator.maxTouchPoints > 0 || "ontouchstart" in window)) $("help").style.display = "none";
 
 /* Pausa */
 function setPause(v) {
-  if (!started || finished || ONLINE) return;   // en línea el juego no se puede pausar
+  if (!started || finished) return;
   paused = v; pauseEl.style.display = v ? "flex" : "none";
   if (v) { joy.active = false; joy.x = joy.y = 0; }
 }
@@ -1307,168 +1209,9 @@ window.addEventListener("keydown", e => {
   if (e.target && e.target.tagName === "INPUT") return;
   const k = e.key.toLowerCase(); if (k === "p" || k === "escape") setPause(!paused);
 });
-document.addEventListener("visibilitychange", () => { if (document.hidden) { setPause(true); if (ONLINE) { sendWS({ t: "in", x: 0, y: 0 }); lastIn = [0, 0, 0]; } } });
+document.addEventListener("visibilitychange", () => { if (document.hidden) setPause(true); });
 $("btnPause").onclick = () => setPause(true); $("resumeBtn").onclick = () => setPause(false);
 $("quitBtn").onclick = () => location.reload(); $("btnSound").onclick = toggleMute;
-
-/* Pantalla completa (en celular se activa solo al pulsar JUGAR y se intenta bloquear en horizontal) */
-const FS = typeof document.documentElement !== "undefined" && (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
-function goFullscreen() {
-  try {
-    const el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen && el.webkitRequestFullscreen();
-    if (p && p.then) p.then(() => { if (screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(() => {}); }).catch(() => {});
-  } catch (e) {}
-}
-function toggleFullscreen() { if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } else goFullscreen(); }
-$("btnFull").onclick = toggleFullscreen; if (!FS) $("btnFull").style.display = "none";
-
-/* ---------- Modo en línea (multijugador) ---------- */
-const ONLINE_URL = "";   // ← dirección de tu servidor, ej. "wss://dino-blades.onrender.com". Si abres el juego desde el propio servidor, déjala vacía.
-let ONLINE = false, ws = null, myId = 0, snaps = [], netMM = [], netClock = 0, netClockAt = 0, aliveCount = 0, onlineCount = 1, lastIn = [0, 0, 0], tryUntil = 0, netErr = "";
-const onlineEnts = new Map(), PU_TYPES = ["speed", "shield", "magnet"];
-const wsUrl = () => ONLINE_URL || (location.protocol === "https:" ? "wss://" : "ws://") + location.host;
-const sendWS = o => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); };
-
-function hudUpdate(alive) {
-  document.getElementById("rivalsCount").textContent = alive;
-  document.getElementById("topBladeCount").textContent = player.blades;
-  document.getElementById("levelNum").textContent = tierOf(player.blades) + 1;
-  const st = document.getElementById("defensiveStatus");
-  st.innerHTML = player.defensive ? 'Estado: <span class="defensive-active">DEFENSIVO</span>' : 'Estado: <span>Ataque</span>';
-  const pw = [];
-  if (player.speedTimer > 0) pw.push('<span style="color:#ffcc00">Velocidad ' + player.speedTimer.toFixed(1) + 's</span>');
-  if (player.shieldTimer > 0) pw.push('<span style="color:#00f0ff">Escudo ' + player.shieldTimer.toFixed(1) + 's</span>');
-  if (player.magnetTimer > 0) pw.push('<span style="color:#cc00ff">Imán ' + player.magnetTimer.toFixed(1) + 's</span>');
-  document.getElementById("activePowerups").innerHTML = pw.join("");
-}
-function retry() { if (ONLINE && ws && ws.readyState === 1) sendWS({ t: "respawn" }); else location.reload(); }
-
-function netEntity(r) {          // r = [id, nombre, skin, jefe]
-  let e = onlineEnts.get(r[0]);
-  if (!e) { e = makeEntity(0, 0, 5, "#0af", "#fff", 0); onlineEnts.set(r[0], e); }
-  const s = r[3] ? { color: "#b00020", inner: "#ff6b6b", blade: ["#ffd6d6", "#e63946"] } : SKINS[Math.abs(r[2] | 0) % SKINS.length];
-  Object.assign(e, { id: r[0], name: r[1], boss: !!r[3], color: s.color, innerColor: s.inner, bladeCols: s.blade, alive: true });
-  return e;
-}
-function enterGame() {
-  startEl.style.display = "none"; started = true; nickInput.blur();
-  $("hudBtns").style.display = "flex"; timerEl.style.display = "block"; $("btnPause").style.display = "none"; $("onlineBox").style.display = "block";
-  banner("🌐 En línea: sobrevive a bots y jugadores reales", "#7dff7d");
-}
-function failOnline(msg) { ws = null; $("onlineBtn").disabled = false; nickErr.style.color = ""; nickErr.textContent = msg || "No se pudo conectar al servidor. Intenta otra vez o juega solo."; }
-function lostConnection() {
-  ONLINE = false; finished = true; player.alive = false;
-  $("deathMsg").textContent = "Se perdió la conexión con el servidor"; $("finalScore").textContent = ""; $("rankOver").innerHTML = "";
-  $("retryBtn").textContent = "RECARGAR"; $("gameOver").style.display = "flex";
-}
-function connect() {
-  let sock; try { sock = new WebSocket(wsUrl()); } catch (e) { return failOnline(); }
-  ws = sock;
-  sock.onopen = () => sendWS({ t: "join", name: playerName, skin: skinIdx });
-  sock.onmessage = ev => { try { onNet(JSON.parse(ev.data)); } catch (e) { console.error("net:", e); } };
-  sock.onclose = () => {
-    if (ws !== sock) return;
-    if (ONLINE) lostConnection();
-    else if (Date.now() < tryUntil) setTimeout(connect, 3000);
-    else failOnline(netErr);
-  };
-}
-function startOnline() {
-  const r = validateNick(nickInput.value);
-  if (!r.ok) { nickErr.textContent = r.msg; return; }
-  if (!ONLINE_URL && /netlify\.app$/.test(location.hostname)) { nickErr.textContent = "Falta poner la dirección de tu servidor en ONLINE_URL."; return; }
-  playerName = r.nick; player.name = r.nick;
-  try { localStorage.setItem("dinoNick", r.nick); } catch (e) {}
-  for (const k in keys) keys[k] = false;
-  $("onlineBtn").disabled = true; nickErr.style.color = "#9fd8ff"; nickErr.textContent = "Conectando… (el servidor gratuito puede tardar hasta 1 minuto en despertar)";
-  if (IS_TOUCH) goFullscreen();
-  initAudio(); tryUntil = Date.now() + 90000; netErr = ""; connect();
-}
-function onNet(m) {
-  if (m.t === "init") {
-    const again = ONLINE;
-    ONLINE = true; finished = false; myId = m.id; collapsed = true;
-    obstacles.length = 0; m.obs.forEach(o => obstacles.push(o));
-    zone.cx = m.zcx; zone.cy = m.zcy;
-    onlineEnts.clear(); snaps.length = 0; knives.length = 0; powerups.length = 0; meteors.length = 0; netMM = [];
-    m.roster.forEach(r => { if (r[0] !== myId) netEntity(r); });
-    netClock = m.n; netClockAt = performance.now(); gameClock = m.n;
-    Object.assign(player, { alive: true, blades: 5, tier: 0, shieldTimer: 0 });
-    nickErr.textContent = ""; $("gameOver").style.display = "none"; $("retryBtn").textContent = "REAPARECER";
-    if (!started) enterGame(); else if (again) banner("🔄 ¡Nueva partida!", "#7dff7d");
-  } else if (m.t === "s") {
-    const now = performance.now(), map = new Map();
-    m.e.forEach(a => map.set(a[0], a));
-    snaps.push({ t: now, e: map }); if (snaps.length > 8) snaps.shift();
-    netClock = m.n; netClockAt = now; aliveCount = m.a; onlineCount = m.o;
-    if (m.k) { knives.length = 0; m.k.forEach(k => knives.push({ x: k[0], y: k[1], rot: (k[0] * 7 + k[1] * 13) % 6.28 })); }
-    if (m.p) { powerups.length = 0; m.p.forEach(p => powerups.push({ x: p[0], y: p[1], type: PU_TYPES[p[2]], pulse: p[0] % 6 })); }
-    if (m.mm) netMM = m.mm.map(a => ({ x: a[0], y: a[1], blades: a[2], boss: !!a[3], alive: true }));
-    let i = 0; for (const o of obstacles) if (o.type === "saw") { const a = m.sw[i++]; if (a) { o.x = a[0]; o.y = a[1]; } }
-    meteors.length = 0; m.mt.forEach(a => meteors.push({ x: a[0], y: a[1], r: a[2], t: a[3], delay: 1.5 }));
-  } else if (m.t === "ev") {
-    m.l.forEach(v => {
-      switch (v[0]) {
-        case "f": feed(v[1], v[2]); break;     case "b": banner(v[1], v[2]); break;
-        case "sp": sparks(v[1], v[2], v[3]); break; case "fl": flash(v[1], v[2], v[3]); break; case "bm": boom(v[1], v[2], v[3]); break;
-        case "c": sfxClash(v[1], v[2]); break; case "k": sfxKill(v[1], v[2]); break; case "m": sfxMeteor(v[1], v[2]); break;
-        case "al": sfxAlarm(); break;          case "bo": sfxBoss(); break;
-      }
-    });
-  } else if (m.t === "ent") netEntity(m.r);
-  else if (m.t === "dead") {
-    player.alive = false; joy.active = false; joy.x = joy.y = 0; sfxOver(false);
-    const idx = saveScore({ name: playerName, score: m.score, kills: m.kills, peak: m.peak, time: m.time });
-    $("deathMsg").textContent = m.msg;
-    $("finalScore").textContent = playerName + " · " + m.score + " pts · " + m.kills + " eliminaciones · máx. " + m.peak + " espadas · " + m.time + "s";
-    renderRanking($("rankOver"), idx, 5); $("gameOver").style.display = "flex";
-  } else if (m.t === "spawn") { player.alive = true; $("gameOver").style.display = "none"; }
-  else if (m.t === "err") { netErr = m.msg; tryUntil = 0; if (ws) ws.close(); }
-}
-function netUpdate(dt) {
-  time += dt;
-  const now = performance.now();
-  gameClock = netClock + (now - netClockAt) / 1000; updateZone(); updateTimerHud();
-  const n = snaps.length;
-  if (n) {                       // interpolación con 100 ms de retraso para que el movimiento se vea fluido
-    const rt = now - 100, last = snaps[n - 1];
-    let a = snaps[0], b = snaps[0];
-    for (let i = n - 1; i >= 0; i--) if (snaps[i].t <= rt) { a = snaps[i]; b = snaps[i + 1] || snaps[i]; break; }
-    const f = b.t > a.t ? Math.max(0, Math.min(1, (rt - a.t) / (b.t - a.t))) : 1;
-    enemies.length = 0;
-    last.e.forEach((cur, id) => {
-      const e = id === myId ? player : onlineEnts.get(id); if (!e) return;
-      const pa = a.e.get(id) || cur, pb = b.e.get(id) || cur, fl = cur[4], prev = e.blades;
-      e.x = pa[1] + (pb[1] - pa[1]) * f; e.y = pa[2] + (pb[2] - pa[2]) * f;
-      e.blades = cur[3]; e.defensive = !!(fl & 1); e.faceRight = !!(fl & 2);
-      e.shieldTimer = fl & 4 ? 1 : 0; e.speedTimer = fl & 8 ? 1 : 0; e.magnetTimer = fl & 16 ? 1 : 0; e.alive = true;
-      e.radius = radiusOf(e); e.rotation += (e.defensive ? 9 : 3.5) * dt; e.defMix += ((e.defensive ? 1 : 0) - e.defMix) * Math.min(1, dt * 10);
-      if (e === player) {
-        if (e.blades > prev) sfxPick();
-        const tr = tierOf(e.blades); if (tr > e.tier) { sparks(e.x, e.y, 30); sfxEvolve(); } e.tier = tr;
-      } else enemies.push(e);
-    });
-  }
-  if (player.alive) {            // mandar al servidor hacia dónde quiero moverme
-    let dx = 0, dy = 0;
-    if (keys["w"] || keys["arrowup"]) dy -= 1;
-    if (keys["s"] || keys["arrowdown"]) dy += 1;
-    if (keys["a"] || keys["arrowleft"]) dx -= 1;
-    if (keys["d"] || keys["arrowright"]) dx += 1;
-    if (joy.active && Math.hypot(joy.x, joy.y) > 0.25) { dx = joy.x; dy = joy.y; }
-    if (Math.abs(dx - lastIn[0]) > 0.05 || Math.abs(dy - lastIn[1]) > 0.05 || now - lastIn[2] > 250) { sendWS({ t: "in", x: +dx.toFixed(2), y: +dy.toFixed(2) }); lastIn = [dx, dy, now]; }
-  }
-  for (const o of obstacles) if (o.type === "saw") o.spin += dt * 12;
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const p = particles[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
-    if (p.streak) { p.vx *= 0.94; p.vy *= 0.94; }
-    if (p.life <= 0) particles.splice(i, 1);
-  }
-  hudUpdate(Math.max(0, aliveCount - (player.alive ? 1 : 0)));
-  $("onlineN").textContent = onlineCount;
-}
-$("onlineBtn").onclick = startOnline; $("gateFull").onclick = goFullscreen;
-if (typeof matchMedia === "function") matchMedia("(orientation: portrait)").addEventListener("change", e => { if (IS_TOUCH && e.matches) setPause(true); });
 
 /* ---------- Nick y pantalla de inicio ---------- */
 let started = false, playerName = "Jugador";
@@ -1506,16 +1249,15 @@ function startGame() {
   for (const k in keys) keys[k] = false;
   startEl.style.display = "none";
   started = true;
-  nickInput.blur(); if (IS_TOUCH) goFullscreen();
   $("hudBtns").style.display = "flex"; timerEl.style.display = "block";
   banner("Quédate dentro de la zona segura: se cierra en 3:00", "#7dff7d");
   initAudio();
 }
 document.getElementById("playBtn").addEventListener("click", startGame);
-nickInput.addEventListener("keydown", e => { if (e.key === "Enter") startOnline(); });
+nickInput.addEventListener("keydown", e => { if (e.key === "Enter") startGame(); });
 nickInput.addEventListener("input", () => { nickErr.textContent = ""; });
 try { nickInput.value = localStorage.getItem("dinoNick") || ""; } catch (e) {}
-if (!IS_TOUCH) nickInput.focus();
+nickInput.focus();
 
 let last = performance.now();
 function loop(now) {
@@ -1523,7 +1265,7 @@ function loop(now) {
   last = now;
   if (!started) { time += dt; }                 // fondo animado detrás de la pantalla de inicio
   else if (!finished && !paused) {
-    try { if (ONLINE) netUpdate(dt); else update(dt); } catch (err) { console.error("update:", err); }
+    try { update(dt); } catch (err) { console.error("update:", err); }
   }
   try { draw(); } catch (err) { console.error("draw:", err); }
   requestAnimationFrame(loop);
